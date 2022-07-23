@@ -1,34 +1,46 @@
 {
-	"name": "retmod-cli",
-	"version": "1.0.0",
-	"description": "The CLI for the retmod stack",
-	"main": "index.js",
-	"author": "RedCrafter07 <github@redcrafter07.de>",
-	"license": "GPL-3.0-or-later",
-	"scripts": {
-		"dev": "tsc-fancy -w --preserveConsoleOutput"
-	},
-	"bin": "bin/index.js",
-	"dependencies": {
-		"chalk": "4.1.2",
-		"chalk-animation": "^2.0.2",
-		"command-line-args": "^5.2.1",
-		"figlet": "^1.5.2",
-		"gradient-string": "^2.0.1",
-		"inquirer": "8.2.0",
-		"nanospinner": "^1.1.0",
-		"open": "^8.4.0"
-	},
-	"devDependencies": {
-		"@types/chalk-animation": "^1.6.1",
-		"@types/command-line-args": "^5.2.0",
-		"@types/figlet": "^1.5.4",
-		"@types/gradient-string": "^1.1.2",
-		"@types/inquirer": "8.2.0",
-		"@types/node": "^18.0.6",
-		"concurrently": "^7.3.0",
-		"nodemon": "^2.0.19",
-		"tsc-fancy": "^1.1.2",
-		"typescript": "^4.7.4"
-	}
+  "name": "retmod",
+  "version": "1.0.0",
+  "description": "The CLI for the retmod stack",
+  "main": "index.js",
+  "author": "RedCrafter07 <github@redcrafter07.de>",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
+    "dev:client": "cd frontend && yarn dev",
+    "dev:server": "cd backend && yarn dev",
+    "install": "yarn install:server && yarn install:client",
+    "install:server": "cd backend && yarn install",
+    "install:client": "cd frontend && yarn install",
+    "build": "yarn build:server && yarn build:client",
+    "build:server": "cd backend && yarn build",
+    "build:client": "cd frontend && yarn build",
+    "docker": "yarn install && yarn build",
+    "start": "cd backend && yarn start"
+  },
+  "bin": "bin/index.js",
+  "dependencies": {
+    "@types/cross-spawn": "^6.0.2",
+    "chalk": "4.1.2",
+    "chalk-animation": "^2.0.2",
+    "command-line-args": "^5.2.1",
+    "cross-spawn": "^7.0.3",
+    "figlet": "^1.5.2",
+    "gradient-string": "^2.0.1",
+    "inquirer": "8.2.0",
+    "nanospinner": "^1.1.0",
+    "open": "^8.4.0"
+  },
+  "devDependencies": {
+    "@types/chalk-animation": "^1.6.1",
+    "@types/command-line-args": "^5.2.0",
+    "@types/figlet": "^1.5.4",
+    "@types/gradient-string": "^1.1.2",
+    "@types/inquirer": "8.2.0",
+    "@types/node": "^18.0.6",
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19",
+    "tsc-fancy": "^1.1.2",
+    "typescript": "^4.7.4"
+  }
 }
