@@ -234,7 +234,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 
 							spinner.start();
 
-							await open('https://github.com/RedCrafter07/retmod', {
+							await open('https://github.com/RedCrafter07/retmod-cli/wiki', {
 								wait: true,
 							});
 
