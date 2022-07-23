@@ -1,28 +1,20 @@
 {
-	"name": "retmod",
+	"name": "retmod-cli",
 	"version": "1.0.0",
 	"description": "The CLI for the retmod stack",
 	"main": "index.js",
 	"author": "RedCrafter07 <github@redcrafter07.de>",
 	"license": "GPL-3.0-or-later",
 	"scripts": {
-		"dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
-		"dev:client": "cd frontend && yarn dev",
-		"dev:server": "cd backend && yarn dev",
-		"install": "yarn install:server && yarn install:client",
-		"install:server": "cd backend && yarn install",
-		"install:client": "cd frontend && yarn install",
-		"build": "yarn build:server && yarn build:client",
-		"build:server": "cd backend && yarn build",
-		"build:client": "cd frontend && yarn build",
-		"docker": "yarn install && yarn build",
-		"start": "cd backend && yarn start"
+		"dev": "tsc-fancy -w --preserveWatchOutput"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/RedCrafter07/retmod-cli.git"
 	},
-	"bin": "bin/index.js",
+	"bin": {
+		"retmod": "bin/index.js"
+	},
 	"dependencies": {
 		"@types/cross-spawn": "^6.0.2",
 		"chalk": "4.1.2",
