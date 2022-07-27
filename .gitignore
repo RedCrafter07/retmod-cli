@@ -128,3 +128,6 @@ dist
 
 # Ignore JS -> Typescript
 *.js
+
+# Ignore test stuff
+test/
