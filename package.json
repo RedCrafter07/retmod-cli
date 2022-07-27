@@ -1,5 +1,5 @@
 {
-	"name": "retmod",
+	"name": "retmod-cli",
 	"version": "1.0.1",
 	"description": "The CLI for the retmod stack",
 	"main": "index.js",
