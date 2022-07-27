@@ -74,15 +74,19 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 				message: 'What do you want to do?',
 				choices: [
 					{ name: 'General', type: 'separator' },
-					{ name: 'Show help', value: 'help' },
-					{ name: 'Exit', value: 'exit' },
+					{ name: 'Show help ❓', value: 'help' },
+					{ name: 'Exit 🚪', value: 'exit' },
 					{ name: 'Project', type: 'separator' },
-					{ name: 'Create a new project', value: 'create' },
-					{ name: 'Initialize config', value: 'init' },
+					{ name: 'Create a new project ➕', value: 'create' },
+					{ name: 'Initialize config ✒️', value: 'init' },
 					{
-						name: 'Initialize scripts',
+						name: 'Initialize scripts 📒',
 						value: 'init-scripts',
 					},
+					/* {
+						name: 'Update retmod',
+						value: 'update',
+					}, */
 				],
 			},
 		]);
@@ -94,17 +98,104 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 		default:
 			console.log(`Action ${action} not found.`);
 			break;
+		case 'update':
+			{
+				console.log('Soon™️');
+				return;
+				console.log(
+					chalk.yellowBright(
+						'Updating will add an upstream remote. Please confirm below.',
+					),
+				);
+
+				console.log(
+					`${chalk.red('[!]')} ${chalk.yellow(
+						'This will overwrite the current upstream remote, if added.',
+					)}`,
+				);
+
+				const { proceed } = await inquirer.prompt([
+					{
+						name: 'proceed',
+						type: 'confirm',
+						message: 'Proceed?',
+					},
+				]);
+
+				if (!proceed) {
+					console.log('Bye!');
+					return;
+				}
+
+				const spinner = createSpinner('Adding git remote...');
+
+				spinner.start();
+
+				await spawnSync(
+					'git',
+					[
+						'remote',
+						'add',
+						'upstream',
+						'https://github.com/RedCrafter07/retmod.git',
+					],
+					{},
+				);
+
+				spinner.success();
+
+				spinner.start({
+					text: 'Getting directory names from config...',
+				});
+
+				const config: typeof defaultConfig = JSON.parse(
+					await readFileSync('./retmod.config.json').toString(),
+				);
+
+				const client = config.directories.client;
+				const server = config.directories.server;
+
+				spinner.success();
+
+				spinner.start({
+					text: 'Renaming directories...',
+				});
+
+				await renameSync(`./${client}`, `./client`);
+				await renameSync(`./${server}`, `./server`);
+
+				spinner.success();
+
+				spinner.start({
+					text: 'Pulling...',
+				});
+
+				await spawnSync('git', ['pull', 'upstream', 'main'], {});
+
+				spinner.success();
+
+				spinner.start({
+					text: 'Renaming directories back...',
+				});
+
+				await renameSync(`./client`, `./${client}`);
+				await renameSync(`./server`, `./${server}`);
+
+				spinner.success({
+					text: 'Updated successfully!',
+				});
+			}
+			break;
 		case 'init-scripts':
 			{
 				await initScripts(true);
 			}
-
 			break;
 		case 'exit':
 			process.exit(0);
 		case 'create':
 			{
-				const { name, serverDir, clientDir } = await inquirer.prompt([
+				const { name, serverDir, clientDir, repo } = await inquirer.prompt([
 					{
 						name: 'name',
 						type: 'input',
@@ -123,6 +214,13 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 						message: "What's the name of your client directory?",
 						default: 'client',
 					},
+					{
+						name: 'repo',
+						type: 'input',
+						message:
+							"What's the URL of your repository? (Press enter to continue with default)",
+						default: 'https://github.com/RedCrafter07/retmod.git',
+					},
 				]);
 				const spinner = await createSpinner('Cloning from Github...');
 				spinner.start();
@@ -133,8 +231,10 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 					name,
 				]);
 
-				gitClone.on('close', async (code) => {
+				gitClone.on('close', async () => {
 					spinner.success({ text: 'Cloning completed!' });
+
+					await swapRepo(repo, `./${name}`);
 
 					const configSpinner = createSpinner('Initializing config...');
 					configSpinner.start();
@@ -269,6 +369,23 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 			break;
 	}
 })();
+
+async function swapRepo(url: string, cwd = '.', remote = 'origin') {
+	return new Promise<void>((resolve) => {
+		const spinner = createSpinner('Changing remote...');
+
+		spinner.start();
+
+		const git = spawn('git', ['remote', 'set-url', remote, url], {
+			cwd,
+		});
+
+		git.on('close', async () => {
+			spinner.success({ text: 'Remote changed!' });
+			resolve();
+		});
+	});
+}
 
 async function initScripts(enableRevert: boolean, cwd = '.') {
 	let spinner = createSpinner('Checking for config...');
