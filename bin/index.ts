@@ -101,7 +101,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 		case 'update':
 			{
 				console.log('Soon™️');
-				return;
+				break;
 				console.log(
 					chalk.yellowBright(
 						'Updating will add an upstream remote. Please confirm below.',
@@ -217,8 +217,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 					{
 						name: 'repo',
 						type: 'input',
-						message:
-							"What's the URL of your repository? (Press enter to continue with default)",
+						message: "What's the URL of your repository?",
 						default: 'https://github.com/RedCrafter07/retmod.git',
 					},
 				]);
