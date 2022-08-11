@@ -36,17 +36,16 @@ const defaultConfig = {
 };
 
 const defaultScripts = {
-	dev: 'concurrently "yarn dev:client" "yarn dev:server"',
-	'dev:client': 'cd {{CLIENTDIR}} && yarn dev',
-	'dev:server': 'cd {{SERVERDIR}} && yarn dev',
-	install: 'yarn install:server && yarn install:client',
-	'install:server': 'cd {{SERVERDIR}} && yarn install',
-	'install:client': 'cd {{CLIENTDIR}} && yarn install',
-	build: 'yarn build:server && yarn build:client',
-	'build:server': 'cd {{SERVERDIR}} && yarn build',
-	'build:client': 'cd {{CLIENTDIR}} && yarn build',
-	docker: 'yarn install && yarn build',
-	start: 'cd {{SERVERDIR}} && yarn start',
+	dev: 'concurrently "pnpm dev:client" "pnpm dev:server"',
+	'dev:client': 'cd {{CLIENTDIR}} && pnpm dev',
+	'dev:server': 'cd {{SERVERDIR}} && pnpm dev',
+	install: 'pnpm install:server && pnpm install:client',
+	'install:server': 'cd {{SERVERDIR}} && pnpm install',
+	'install:client': 'cd {{CLIENTDIR}} && pnpm install',
+	build: 'pnpm build:server && pnpm build:client',
+	'build:server': 'cd {{SERVERDIR}} && pnpm build',
+	'build:client': 'cd {{CLIENTDIR}} && pnpm build',
+	start: 'cd {{SERVERDIR}} && pnpm start',
 };
 
 const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
@@ -217,8 +216,9 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 					{
 						name: 'repo',
 						type: 'input',
-						message: "What's the URL of your repository?",
-						default: 'https://github.com/RedCrafter07/retmod.git',
+						message:
+							"What's the URL of your repository? (Not a template but the repo which you will use retmod on)",
+						default: 'https://github.com/RedCrafter07/my-new-retmod-repo.git',
 					},
 				]);
 				const spinner = await createSpinner('Cloning from Github...');
@@ -269,7 +269,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 
 					installSpinner.start();
 
-					const installing = spawn('yarn', ['install'], {
+					const installing = spawn('pnpm', ['install'], {
 						cwd: `./${name}`,
 					});
 
@@ -282,7 +282,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 						console.log('To get started, cd into your directory:');
 						console.log(chalk.cyan(`cd ${name}`));
 						console.log('Then, run the dev process:');
-						console.log(chalk.cyan('yarn dev'));
+						console.log(chalk.cyan('pnpm dev'));
 						console.log('\nHave fun programming!');
 					});
 				});
