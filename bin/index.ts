@@ -221,6 +221,18 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 						default: 'https://github.com/RedCrafter07/my-new-retmod-repo.git',
 					},
 				]);
+
+				const givenDirectoryExists = await existsSync(`./${name}`);
+
+				if (givenDirectoryExists) {
+					console.log(
+						chalk.red(
+							`Directory ${name} already exists. Please choose another name.`,
+						),
+					);
+					return;
+				}
+
 				const spinner = await createSpinner('Cloning from Github...');
 				spinner.start();
 
@@ -269,14 +281,14 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 
 					installSpinner.start();
 
-					const installing = spawn('pnpm', ['install'], {
+					const installing = spawn('pnpm', ['i', '-r'], {
 						cwd: `./${name}`,
 					});
 
 					installing.on('close', async () => {
 						installSpinner.success({ text: 'Dependencies installed!' });
 						console.log(
-							chalk.green(`\nProject ${name} created successfully!\n`),
+							chalk.green(`\nProject "${name}" created successfully!\n`),
 						);
 						console.log();
 						console.log('To get started, cd into your directory:');
