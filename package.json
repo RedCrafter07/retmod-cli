@@ -1,6 +1,6 @@
 {
 	"name": "retmod-cli",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "The CLI for the retmod stack",
 	"main": "index.js",
 	"author": "RedCrafter07 <github@redcrafter07.de>",
@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@types/cross-spawn": "^6.0.2",
+		"axios": "^0.27.2",
 		"chalk": "4.1.2",
 		"chalk-animation": "^2.0.2",
 		"command-line-args": "^5.2.1",
