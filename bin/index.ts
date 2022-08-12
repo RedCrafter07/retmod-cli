@@ -259,11 +259,7 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 				const spinner = await createSpinner('Cloning from Github...');
 				spinner.start();
 
-				const gitClone = spawn('git', [
-					'clone',
-					'https://github.com/RedCrafter07/retmod.git',
-					name,
-				]);
+				const gitClone = spawn('git', ['clone', template, name]);
 
 				gitClone.on('close', async () => {
 					spinner.success({ text: 'Cloning completed!' });
