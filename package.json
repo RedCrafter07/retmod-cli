@@ -10,7 +10,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/RedCrafter07/retmod-cli.git"
+		"url": "https://github.com/Retmod/cli.git"
 	},
 	"bin": {
 		"retmod": "bin/index.js"
