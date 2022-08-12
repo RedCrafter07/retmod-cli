@@ -23,6 +23,7 @@ import {
 } from 'fs';
 import open from 'open';
 import { SpawnOptions } from 'child_process';
+import axios from 'axios';
 
 const timer = (time: number) =>
 	new Promise((resolve) => setTimeout(resolve, time));
@@ -39,7 +40,7 @@ const defaultScripts = {
 	dev: 'concurrently "pnpm dev:client" "pnpm dev:server"',
 	'dev:client': 'cd {{CLIENTDIR}} && pnpm dev',
 	'dev:server': 'cd {{SERVERDIR}} && pnpm dev',
-	"i-all": 'pnpm -r i',
+	'i-all': 'pnpm -r i',
 	build: 'pnpm build:server && pnpm build:client',
 	'build:server': 'cd {{SERVERDIR}} && pnpm build',
 	'build:client': 'cd {{CLIENTDIR}} && pnpm build',
@@ -192,33 +193,57 @@ const spawnSync = (command: string, args: string[], opts: SpawnOptions) =>
 			process.exit(0);
 		case 'create':
 			{
-				const { name, serverDir, clientDir, repo } = await inquirer.prompt([
-					{
-						name: 'name',
-						type: 'input',
-						message: "What's the name of your project?",
-						default: 'retmod-project',
-					},
-					{
-						name: 'serverDir',
-						type: 'input',
-						message: "What's the name of your server directory?",
-						default: 'server',
-					},
-					{
-						name: 'clientDir',
-						type: 'input',
-						message: "What's the name of your client directory?",
-						default: 'client',
-					},
-					{
-						name: 'repo',
-						type: 'input',
-						message:
-							"What's the URL of your repository? (Not a template but the repo which you will use retmod on)",
-						default: 'https://github.com/RedCrafter07/my-new-retmod-repo.git',
-					},
-				]);
+				const templateSpinner = createSpinner('Fetching templates...');
+
+				const templateData = await axios.get(
+					'https://raw.githubusercontent.com/Retmod/templates/main/templates.json',
+				);
+
+				const templates: {
+					name: string;
+					url: string;
+				}[] = templateData.data.templates;
+
+				templateSpinner.success({ text: 'Templates fetched successfully!' });
+
+				const { name, serverDir, clientDir, repo, template } =
+					await inquirer.prompt([
+						{
+							name: 'name',
+							type: 'input',
+							message: "What's the name of your project?",
+							default: 'retmod-project',
+						},
+						{
+							name: 'serverDir',
+							type: 'input',
+							message: "What's the name of your server directory?",
+							default: 'server',
+						},
+						{
+							name: 'clientDir',
+							type: 'input',
+							message: "What's the name of your client directory?",
+							default: 'client',
+						},
+						{
+							name: 'repo',
+							type: 'input',
+							message:
+								"What's the URL of your repository? (Not a template but the repo which you will use retmod on)",
+							default: 'https://github.com/RedCrafter07/my-new-retmod-repo.git',
+						},
+						{
+							name: 'template',
+							type: 'list',
+							message: 'Which template do you want to use?',
+							choices: templates.map(({ name, url }) => ({
+								name,
+								value: url,
+							})),
+							default: 'default',
+						},
+					]);
 
 				const givenDirectoryExists = await existsSync(`./${name}`);
 
